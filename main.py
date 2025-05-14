@@ -5,7 +5,6 @@ from datetime import datetime
 
 # Load API key from Streamlit secrets
 API_KEY = st.secrets["api_key"] 
-#API_KEY = st.secrets["indianapi"]["api_key"]
 BASE_URL = "https://stock.indianapi.in"
 
 st.title("📈 EquiLens – TCS Stock Snapshot")
@@ -46,9 +45,7 @@ stock_data = fetch_stock_data(stock_name)
 nse_price = stock_data["currentPrice"].get("NSE")
 
 # PE and PB are found under peerCompanyList[0]
-peer_data = stock_data.get("peerCompanyList", [])[0] if stock_data.get("peerCompanyList") else {}
-#pe = peer_data.get("priceToEarningsValueRatio")
-#pb = peer_data.get("priceToBookValueRatio")
+#peer_data = stock_data.get("peerCompanyList", [])[0] if stock_data.get("peerCompanyList") else {}
 pe = stock_data["companyProfile"]["peerCompanyList"][0].get("priceToEarningsValueRatio")
 pb = stock_data["companyProfile"]["peerCompanyList"][0].get("priceToBookValueRatio")
 
@@ -59,9 +56,12 @@ col3.metric("📘 PB Ratio", f"{pb}" if pb else "N/A")
 
 
 # Step 2: Get 1-month price history
-if stock_data and stock_data.get("tickerId"):
-    history_data = fetch_price_history(stock_data["tickerId"])
-    if history_data and "datasets" in history_data:
+# Fix: Use correct ticker ID from peerCompanyList
+ticker_id = peer_data.get("tickerId")
+
+if ticker_id:
+    history_data = fetch_price_history(ticker_id)
+    if history_data and "datasets" in history_data and history_data["datasets"]:
         price_dataset = history_data["datasets"][0]["values"]
         df = pd.DataFrame(price_dataset, columns=["Date", "Price"])
         df["Date"] = pd.to_datetime(df["Date"])
@@ -72,3 +72,4 @@ if stock_data and stock_data.get("tickerId"):
         st.line_chart(df.set_index("Date"))
     else:
         st.warning("No price history found.")
+
