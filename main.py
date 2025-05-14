@@ -4,7 +4,8 @@ import pandas as pd
 from datetime import datetime
 
 # Load API key from Streamlit secrets
-API_KEY = st.secrets["indianapi"]["api_key"]
+API_KEY = st.secrets["api_key"] 
+#API_KEY = st.secrets["indianapi"]["api_key"]
 BASE_URL = "https://indianapi.in"
 
 st.title("📈 EquiLens – TCS Stock Snapshot")
