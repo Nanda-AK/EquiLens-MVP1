@@ -48,8 +48,10 @@ if stock_data:
     # Extract key details
     nse_price = stock_data["currentPrice"].get("NSE")
     key_metrics = stock_data.get("keyMetrics", {})
-    pe = key_metrics.get("PE")
-    pb = key_metrics.get("PB")
+    pe = key_metrics.get("priceToEarningsValueRatio")
+    #pe = key_metrics.get("PE")
+    pb = key_metrics.get("priceToBookValueRatio")
+    #pb = key_metrics.get("PB")
 
     col1, col2, col3 = st.columns(3)
     col1.metric("📌 NSE Price", f"₹{nse_price}" if nse_price else "N/A")
