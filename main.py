@@ -42,23 +42,19 @@ def fetch_price_history(symbol):
 # Step 1: Get current price + metrics
 stock_data = fetch_stock_data(stock_name)
 
-if stock_data:
-    st.subheader(f"🔹 Current Overview – {stock_data['companyName']}")
+# Extract key details
+nse_price = stock_data["currentPrice"].get("NSE")
 
-    # Extract key details
-    nse_price = stock_data["currentPrice"].get("NSE")
-    key_metrics = stock_data.get("keyMetrics", {})
-    pe = key_metrics.get("priceToEarningsValueRatio")
-    #pe = key_metrics.get("PE")
-    pb = key_metrics.get("priceToBookValueRatio")
-    #pb = key_metrics.get("PB")
+# PE and PB are found under peerCompanyList[0]
+peer_data = stock_data.get("peerCompanyList", [])[0] if stock_data.get("peerCompanyList") else {}
+pe = peer_data.get("priceToEarningsValueRatio")
+pb = peer_data.get("priceToBookValueRatio")
 
-    col1, col2, col3 = st.columns(3)
-    col1.metric("📌 NSE Price", f"₹{nse_price}" if nse_price else "N/A")
-    col2.metric("📊 PE Ratio", f"{pe}" if pe else "N/A")
-    col3.metric("📘 PB Ratio", f"{pb}" if pb else "N/A")
-else:
-    st.error("Failed to fetch stock data.")
+col1, col2, col3 = st.columns(3)
+col1.metric("📌 NSE Price", f"₹{nse_price}" if nse_price else "N/A")
+col2.metric("📊 PE Ratio", f"{pe}" if pe else "N/A")
+col3.metric("📘 PB Ratio", f"{pb}" if pb else "N/A")
+
 
 # Step 2: Get 1-month price history
 if stock_data and stock_data.get("tickerId"):
