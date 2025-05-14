@@ -47,8 +47,10 @@ nse_price = stock_data["currentPrice"].get("NSE")
 
 # PE and PB are found under peerCompanyList[0]
 peer_data = stock_data.get("peerCompanyList", [])[0] if stock_data.get("peerCompanyList") else {}
-pe = peer_data.get("priceToEarningsValueRatio")
-pb = peer_data.get("priceToBookValueRatio")
+#pe = peer_data.get("priceToEarningsValueRatio")
+#pb = peer_data.get("priceToBookValueRatio")
+pe = stock_data["companyProfile"]["peerCompanyList"]["0"].get("priceToEarningsValueRatio")
+pb = stock_data["companyProfile"]["peerCompanyList"]["0"].get("priceToBookValueRatio")
 
 col1, col2, col3 = st.columns(3)
 col1.metric("📌 NSE Price", f"₹{nse_price}" if nse_price else "N/A")
